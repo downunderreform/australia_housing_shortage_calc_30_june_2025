@@ -159,7 +159,7 @@ print("")
 # 30.6% of households were renting according to the 2021 census.
 # Reference: https://www.abs.gov.au/statistics/people/people-and-communities/snapshot-australia/2021#australian-homes
 # A typical healthy vacancy rate is 3%
-# Reference: https://www.realestate.com.au/insights/where-rental-vacancy-has-hit-an-all-time-low/?utm_source=chatgpt.com
+# Reference: https://www.realestate.com.au/insights/where-rental-vacancy-has-hit-an-all-time-low/
 # Therefore we need to subtract 3% of the renting households from the total physical stock, to be used as vacancies
 number_rental_vacancy_homes = total_households * 0.306 * 0.03
 total_households = total_households + number_rental_vacancy_homes
@@ -172,7 +172,7 @@ print("")
 # Analysts state: "A balanced real estate market is characterized by an equilibrium between the number of
 # homes available for sale and the demand from potential buyers. This state occurs when there is approximately
 # 5 to 7 months of inventory"
-# Reference: https://accountinginsights.org/how-many-months-of-inventory-is-a-balanced-market/?utm_source=chatgpt.com
+# Reference: https://www.jchs.harvard.edu/blog/existing-inventories-historically-low-homebuyers-turn-new-home-market
 # ABS data shows there were 549,147 property transfers in 2024
 # Reference: https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/total-value-dwellings/jun-quarter-2025/643202.xlsx
 # Therefore we need to add 50% of 549,147 to the number of homes required
