@@ -54,6 +54,18 @@ year_end_dwellings[2024] = year_end_dwellings[2023] + annual_net_construction_20
 
 number_of_dwellings_june_30th_2025 = year_end_dwellings[2024] + annual_net_construction_rates[2025] * 0.5
 
+# However, we need to subtract dwellings not suitable for permanent habitation.
+# In the 2021 census, there were 94,925 dwellings categorised as: Caravan, Cabin, houseboat, Improvised home, tent and sleepers out.
+# These are not suitable for permanent habitation, so these are subtracted from the number of physical dwellings
+# Reference: https://www.abs.gov.au/statistics/people/housing/housing-census/2021/Housing%20data%20summary.xlsx (see table 2)
+number_of_permanent_dwellings_june_30th_2025 = number_of_dwellings_june_30th_2025 - 94925
+
+# The total permanent dwellings calculated by the above method was 11,354,187.
+# This was cross-referenced against the "Total Value of Dwellings" dataset.
+# According to this, there were  11,357,500 residential dwellings in Australia showed as of June 30th, 2025.
+# This is within 3,000 of our estimate, providing further support for the accuracy of this figure.
+# Reference: https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/total-value-dwellings/dec-quarter-2025/643201.xlsx
+
 # # Step 2: Calculate the number of homes required to adequately accommodate the people in Australia
 
 # The basic approach of all methods is to first calculate the number of required households.
@@ -144,15 +156,18 @@ for i, bracket_population in enumerate(population_by_bracket.values()):
     total_households = total_households + living_propensities_1996[17][i] / 100 * bracket_population / 1
 
 # Display the results
-print("Number of households as of 30th June 2025 = " + str(total_households / 1e6) + " million")
-print("Number of physical dwellings as of 30th June 2025 = " + str(number_of_dwellings_june_30th_2025 /1e6) + " million")
+print("")
+print("The number of households that would form in Australia under affordable housing conditions, as 30th June 2025, was: "
+      +  f"{total_households / 1e6:.3f} million")
+print("The number of dwellings in Australia, including occupied and unoccupied, as of 30th June 2025, was: "
+      + f"{number_of_dwellings_june_30th_2025 / 1e6:.3f} million")
 print("")
 
 # However, need to subtract dwellings not suitable for permanent habitation.
 # Reference: https://www.abs.gov.au/statistics/people/housing/housing-census/2021/Housing%20data%20summary.xlsx (see table 2)
 print("However, in the 2021 census, there were 94,925 dwellings categorised as: Caravan, Cabin, houseboat, Improvised home, tent and sleepers out.")
 print("These are not suitable for permanent habitation, so these are subtracted from the number of physical dwellings.")
-print("This leaves a total number of physical dwellings of: " + str((number_of_dwellings_june_30th_2025 - 94925) / 1e6) + " million")
+print("This leaves a total number of physical dwellings of: " + f"{number_of_permanent_dwellings_june_30th_2025 / 1e6:.3f} million")
 print("")
 
 # Also, need to subtract dwellings to be used as vacant rental stock, to ensure a non-constrained market.
@@ -162,10 +177,9 @@ print("")
 # Reference: https://www.realestate.com.au/insights/where-rental-vacancy-has-hit-an-all-time-low/
 # Therefore we need to subtract 3% of the renting households from the total physical stock, to be used as vacancies
 number_rental_vacancy_homes = total_households * 0.306 * 0.03
-total_households = total_households + number_rental_vacancy_homes
 print("However, economists recommend that in order for a rental market to be healthy, there needs to be 3% vacancy rate.")
-print("This means we need to add: " + str(number_rental_vacancy_homes / 1e6) + " million to the number of homes needed")
-print("This gives the total number of homes needed as: " + str(total_households / 1e6) + " million")
+print("This means we need to add: " + f"{number_rental_vacancy_homes/ 1e6:.3f}"  + " million to the number of homes needed")
+print("This gives the total number of homes needed as: "  +  f"{(total_households + number_rental_vacancy_homes)/ 1e6:.3f} million")
 print("")
 
 # Additionally, we need to have some vacant homes for sale.
@@ -177,12 +191,14 @@ print("")
 # Reference: https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/total-value-dwellings/jun-quarter-2025/643202.xlsx
 # Therefore we need to add 50% of 549,147 to the number of homes required
 number_vacant_homes_for_sale = 549147 * 0.5
+total_homes_needed = total_households + number_rental_vacancy_homes + number_vacant_homes_for_sale
 print("However, analysts recommend that in order for a home purchase market to be healthy, there needs to be 6 months of unoccupied homes on the market.")
 print("In 2024, there were 549,147 home sales according to the ABS.")
-print("This means we need to add: " + str(number_vacant_homes_for_sale / 1e6) + " million to the number of homes needed")
-print("This gives the total number of homes needed as: " + str((total_households + number_vacant_homes_for_sale) / 1e6) + " million")
+print("This means we need to add: " +  f"{number_vacant_homes_for_sale / 1e6:.3f}" + " million to the number of homes needed")
+print("This gives the total number of homes needed as: " + f"{total_homes_needed / 1e6:.3f}" + " million")
 print("")
 
-print("Remember we had a total number of physical dwellings of: " + str((number_of_dwellings_june_30th_2025 - 94925) / 1e6) + " million")
-print("Even with just the allowances mentioned above, the total number of homes needed is: " + str((total_households + number_vacant_homes_for_sale) / 1e6) + " million")
-print("This means that even in the perfect distribution scenario, there would be a shortage of: " + str(((number_of_dwellings_june_30th_2025 - 94925) - (total_households + number_vacant_homes_for_sale))/ 1e6) + " million")
+print("Remember we had a total number of physical dwellings of: " +  f"{number_of_permanent_dwellings_june_30th_2025 / 1e6:.3f}" + " million")
+print("Even with just the allowances mentioned above, the total number of homes needed is: " + f"{total_homes_needed / 1e6:.3f}" + " million")
+print("This means that even in the perfect distribution scenario, there would be a shortage of: "
+      + f"{(number_of_permanent_dwellings_june_30th_2025 - total_homes_needed) / 1e6 * -1:.3f}"  " million homes")
